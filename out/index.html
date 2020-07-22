@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>clingojs</h1>
+<hr>
+<p>A Node.js wrapper module for the Clingo program.</p>
+<pre class="prettyprint source"><code>npm install clingojs
+</code></pre>
+<p>This module requires Clingo to be installed to work. Tested with Clingo 4.2.1 but likely works with other versions as well.</p>
+<h2>Basic Usage</h2>
+<hr>
+<pre class="prettyprint source lang-javascript"><code>var Clingo = require('clingo');
+
+var clingo = new Clingo();
+
+clingo.config({ // Sets the basic configuration for this clingo instance
+	maxModels: 0 // Return all models
+});
+
+clingo.solve({
+	inputFiles: ['/path/to/some/file']
+})
+	.on('model', function(model) {
+		// Here 'model' is an Array of strings representing the atoms of the model
+		// e.g. ['example(0)', 'example(1)']
+	})
+	.on('end', function() {
+		// This function gets called after all models have been received
+	});
+</code></pre>
+<h2>Class: Clingo</h2>
+<h3>Clingo([options])</h3>
+<p>The Clingo constructor takes an optional <em>options</em> argument containing configuration options detailed in the <a href="#configuration"><strong>Configuration</strong></a> section.</p>
+<h3>clingo.config([options])</h3>
+<p>If options argument is present, merges the <em>options</em> object into the configuration of this clingo instance and returns the instance.</p>
+<p>If <em>options</em> is missing, returns the configuration object of this clingo instance.</p>
+<h3>clingo.setConfig(config)</h3>
+<p>Completely replaces this instance's configuration object with <em>config</em>.</p>
+<h3>clingo.solve([options])</h3>
+<p>Starts the Clingo process. The process uses the instance's configuration, in addition to any other configurations passed in the <em>options</em> argument. Note: Any configurations passed in <em>options</em> do not last beyond the solve() function.</p>
+<p>Returns an object of the form { on: [Function] }. See the <a href="#basic-usage"><strong>Basic Usage</strong></a> section for an example.</p>
+<h2>Configuration</h2>
+<p>The following sections document the different options that can be passed to the <em>config()</em>, <em>setConfig()</em>, and <em>solve()</em> functions.</p>
+<h3>clingo</h3>
+<p>A string which specifies the clingo command. May be a full path, or just the name of the executable if it is on the environment's path.</p>
+<pre class="prettyprint source lang-javascript"><code>var clingo = new Clingo({
+	clingo: '/usr/bin/clingo'
+});
+</code></pre>
+<p>Default: 'clingo'</p>
+<h3>maxModels</h3>
+<p>The maximum number of models to find. If maxModels is 0 then all models are found.</p>
+<pre class="prettyprint source lang-javascript"><code>var clingo = new Clingo({
+	maxModels: 0
+});
+</code></pre>
+<p>Default: 1</p>
+<h3>constants</h3>
+<p>An object to specify clingo constants. This uses the clingo '-c' argument.</p>
+<pre class="prettyprint source lang-javascript"><code>var clingo = new Clingo({
+	constants: { foo: 0, bar = 1 } // The same as passing '-c foo=0,bar=1' on the command line
+});
+</code></pre>
+<p>Default: {}</p>
+<h3>inputFiles</h3>
+<p>An array of input files for the clingo process to read in. These files should be written using gringo syntax.</p>
+<pre class="prettyprint source lang-javascript"><code>var clingo = new Clingo({
+	inputFiles: ['/path/to/file', '/path/to/otherFile']
+});
+</code></pre>
+<p>Default: []</p>
+<h3>input</h3>
+<p>The input config property defines input which is to be written to the process' stdin when <em>solve()</em> is called. It can be one of the following:</p>
+<ul>
+<li>string: A string is written as it appears to stdin.</li>
+<li>Array: An Array will be interpreted as atoms, the written to stdin. For example, the array ['example(0)', 'example(1)'] will be written as 'example(0). example(1).'</li>
+<li>Readable stream: A Readable stream will be piped to stdin.</li>
+<li>Object: Any other object not listed above will have the output of its <em>toString()</em> written to stdin.</li>
+</ul>
+<pre class="prettyprint source lang-javascript"><code>var clingo = new Clingo({
+	input: 'tobe | not tobe.'
+});
+</code></pre>
+<p>Default: undefined</p>
+<h3>args</h3>
+<p>Defines any additional arguments to start the clingo process with.</p>
+<pre class="prettyprint source lang-javascript"><code>var clingo = new Clingo({
+	args: ['--time-limit=10']
+});
+</code></pre>
+<p>Default: []</p>
+<h3>returnStdin</h3>
+<p>When set to <em>true</em>, the clingo process' stdin will be left open to be further written to. When <em>solve()</em> is invoked, the returned object will then have a <em>stdin</em> property which is a Writable stream. Don't forget to call <em>stdin.end()</em> or the process will not exit.</p>
+<pre class="prettyprint source lang-javascript"><code>var clingo = new Clingo({
+	returnStdin: true
+})
+
+var ps = clingo.solve({
+	//... options
+});
+
+ps.stdin.write('I can write more to the process stdin!');
+ps.stdin.end();
+</code></pre>
+<p>Default: false</p>
+<h3>returnStdout</h3>
+<p>When set to <em>true</em>, this bypasses the module's own interpreting of the process output, and instead returns the process stdout as a property of the object returned from <em>solve()</em>.</p>
+<pre class="prettyprint source lang-javascript"><code>var clingo = new Clingo({
+	returnStdout: true
+})
+
+var ps = clingo.solve({
+	//... options
+});
+
+ps.stdout.setEncoding('utf8');
+ps.stdout.on('data', function(data) {
+	// This is where you would read the process output directly
+});
+ps.stdout.on('end', function() {
+	// Called when the output has been fully read
+})
+</code></pre>
+<p>Default: false</p></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+	<h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Clingo.html">Clingo</a></li></ul>
+	<h3> <a href="uml.html">UML Documentation</a></h3>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed Jul 22 2020 22:30:31 GMT+0300 (Arabian Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

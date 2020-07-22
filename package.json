@@ -4,7 +4,8 @@
   "description": "A wrapper module for the Clingo program.",
   "main": "clingo.js",
   "scripts": {
-    "test": "node ./bin/test"
+    "test": "node ./bin/test",
+    "doc": "jsdoc --readme  ./README.md ."
   },
   "repository": {
     "type": "git",
