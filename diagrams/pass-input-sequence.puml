@@ -1,0 +1,26 @@
+@startuml
+title Pass Input
+
+actor client
+
+client -> clingojs : Clingo({input:object})
+client -> clingojs ++ : solve()
+clingojs -> Clingo ++ 
+clingojs -> Clingo : stdout.on(callback)
+
+alt input is array
+    clingojs -> clingojs : input.toString()
+    clingojs -> clingojs : replace comas with periods
+    clingojs -> Clingo : stdin.write()
+else input is string
+    clingojs -> Clingo : stdin.write(input)
+else input is readable stream
+    clingojs -> Clingo : stdin.pipe(input)
+else 
+    clingojs -> Clingo : stdin.write(input.toString())
+end 
+
+deactivate
+deactivate
+
+@enduml

@@ -1,0 +1,27 @@
+@startuml
+title Change Configuration
+
+actor client
+
+client -> clingojs : Clingo()
+
+alt Update Configuration
+
+    client -> clingojs ++ : config(configs)
+    alt configs != null
+        clingojs -> clingojs ++ : mergeConfigs(oldConfigs, configs)
+        deactivate
+    else 
+        clingojs --> client -- : currentConfigs
+    end
+else Replace Configuration
+
+    client -> clingojs ++ : setConfig(object) 
+    deactivate
+
+end 
+
+client -> clingojs ++ : solve()
+clingojs -> clingojs : validateConfig()
+
+@enduml

@@ -1,0 +1,33 @@
+@startuml
+title Solve
+
+actor client
+
+client -> clingojs : Clingo()
+client -> clingojs ++ : solve()
+
+clingojs ->> Clingo ++ : spawn()
+alt clingojs handles output
+    clingojs -> Clingo : stdout.on(dataCallback)
+    clingojs -> Clingo : stdout.on(endCallback)
+
+    loop
+        Clingo -> clingojs : dataCallback(data)
+        clingojs -> clingojs : convets model into array
+        clingojs -> client : modelCallback()
+    end
+
+    Clingo -> clingojs : endCallback()
+    clingojs -> client  : endCallback()
+else client handles output
+    clingojs --> client -- : Clingo.stdout
+end
+
+opt 
+    client -> clingojs ++ : config(returnStdin: true)
+    clingojs --> client -- : Clingo.stdin
+end
+
+deactivate Clingo
+
+@enduml

@@ -1,0 +1,14 @@
+@startuml
+
+skinparam PackageStyle rectangle
+
+actor client
+usecase Solve as solve
+usecase "Change Configurations" as config
+usecase "Pass Input" as input
+
+client -right-> solve
+config .up.> solve : extends
+input .down.> solve : extends
+
+@enduml
