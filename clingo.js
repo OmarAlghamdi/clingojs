@@ -71,6 +71,7 @@ Clingo.prototype.config = function(newConfig) {
  * @private
  * @param {Clingo.Config} baseConfig current configurations
  * @param {Clingo.Config} secondConfig new configurations
+ * @returns {Clingo.Config} returns the baseConfig after merging
  */
 var mergeConfigs = function(baseConfig, secondConfig) {
 
@@ -83,6 +84,9 @@ var mergeConfigs = function(baseConfig, secondConfig) {
 };
 /**
  * Validates the current configurations
+ * @throws {Error} Config is either undefined or not a valid object.
+ * @throws {Error} Config property \'clingo\' must be a string.
+ * @throws {Error} Config property \'maxModels\' (when specified) must be a number.
  * @throws {Error} Cannot override the --verbose or -V argument unless returnStdout=true.
  * @throws {Error} Cannot override --const or -c argument. Use \'constants\' config property instead.
  * @throws {Error} Cannot override --number or -n argument. Use \'maxModels\' config property instead.

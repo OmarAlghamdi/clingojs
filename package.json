@@ -5,7 +5,7 @@
   "main": "clingo.js",
   "scripts": {
     "test": "node ./bin/test",
-    "doc": "jsdoc --readme  ./README.md ."
+    "doc": "jsdoc --readme  ./README.md . -c ./jsdoc-config.json"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,8 @@
   },
   "homepage": "https://github.com/dousto/clingojs",
   "devDependencies": {
+    "jsdoc": "^3.6.4",
     "nodeunit": "^0.9.0"
-  }
+  },
+  "dependencies": {}
 }
